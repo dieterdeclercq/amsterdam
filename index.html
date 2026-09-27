@@ -1966,7 +1966,7 @@ const isAndroid=/Android/.test(UA);
 const isStandalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
 let bip=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();bip=e;if(state.view==='reis'||state.view==='info')render();});
 window.addEventListener('appinstalled',()=>{bip=null;LS.set('inst:x',1);render();});
-const SHARESVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5v10h14V11h-1"/></svg>';
+const SHARESVG='<svg class="shr" width="15" height="15" style="width:15px;height:15px;vertical-align:-2px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5v10h14V11h-1"/></svg>';
 const iosSteps='<li>Open deze pagina in <b>Safari</b>.</li><li>Tik onderaan op <b>Deel</b> '+SHARESVG+'.</li><li>Scrol en kies <b>Zet op beginscherm</b>.</li><li>Tik op <b>Voeg toe</b>.</li>';
 const andSteps='<li>Open deze pagina in <b>Chrome</b>.</li><li>Tik rechtsboven op <b>⋮</b> (menu).</li><li>Kies <b>App installeren</b> of <b>Toevoegen aan startscherm</b>.</li><li>Bevestig met <b>Installeren</b>.</li>';
 function instHtml(always){
