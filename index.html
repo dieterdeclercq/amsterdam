@@ -157,6 +157,13 @@ nav button.on{color:var(--ink)}nav button.on:before{background:var(--ink)}
 .lb-sl figcaption{color:#bbb;font-size:12px;padding:8px 14px 0;text-align:center}
 .lb-bot{padding:8px 14px calc(12px + var(--safe-b));color:#888;font-family:var(--mono);font-size:10px;text-align:center}
 .hide{display:none!important}
+.kdot{width:30px;height:24px;margin:-6px 0 -6px 0;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle}
+.kdot i{display:block;width:9px;height:9px;border-radius:50%;background:#E2231A}
+.kdot.pulse i{animation:kp 1.1s ease-in-out 2}
+@keyframes kp{0%,100%{transform:scale(1)}50%{transform:scale(1.9)}}
+@media (prefers-reduced-motion:reduce){.kdot.pulse i{animation:none}}
+.khint{font-family:var(--mono);font-size:11px;color:var(--ink3);margin-top:8px;display:flex;align-items:center;gap:7px}
+.khint i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#E2231A}
 #pmap{height:260px;background:var(--bg2)}
 #pmap .leaflet-control-attribution{background:var(--bg);color:var(--ink3);font-size:9.5px}
 @media (prefers-color-scheme:dark){#lmap .leaflet-tile-pane,#pmap .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.85) contrast(.9)}}
@@ -260,7 +267,7 @@ nav button.on{color:var(--ink)}nav button.on:before{background:var(--ink)}
 </head>
 <body>
 <header id="hdr"><div class="wrap">
- <div class="hd"><div class="brand">KRAS Tours <span>26</span></div><div class="meta" id="meta"></div></div>
+ <div class="hd"><div class="brand">KRAS Tours <span>26</span><button class="kdot" id="kdot" aria-label="Stippen" title="Stippen"><i></i></button></div><div class="meta" id="meta"></div></div>
  <div class="tabs" id="tabs"></div>
 </div></header>
 <main id="main" class="wrap"></main>
@@ -368,7 +375,7 @@ const PROGRAMMA = [
  { id:"za", kort:"ZA 03", label:"Terug", datum:"2026-10-03", kicker:"Dag 4 — zaterdag 3 oktober",
    titel:"Terug naar Gent", fiets:false, modus:"driving", weer:[52.37,4.90],
    items:[
-    { tijd:"08:00–09:00", titel:"Ontbijt", sub:"Hotel" },
+    { tijd:"08:00–09:00", titel:"Ontbijt en evaluatie", sub:"Hotel · vul de evaluatie van de reis in via De reis of hieronder" },
     { tijd:"09:00–10:00", titel:"Valies pakken en uitchecken" },
     { tijd:"10:00", titel:"Fietsen terugbrengen — NDSM Bikes", sub:"NDSM-plein 8", ref:"fietsen", modus:"walking" },
     { tijd:"10:30", titel:"Rijden", sub:"ca. 3u, rechtstreeks", type:"reis" },
@@ -2001,11 +2008,11 @@ const EV=[
  ['h','In één zin'],
  ['t','e13','Wat was je hoogtepunt?'],['t','e14','Wat moet er volgende keer anders?'],['t','e15','Wat neem je mee naar het bureau?'],
  ['h','Tot slot'],
- ['c','e16','Waar gaat de volgende studiereis naartoe?',['Kopenhagen','Zürich en Basel','Wenen','Porto','Hamburg','iets anders']]
+ ['c','e16','Waar gaat de volgende studiereis naartoe?',['Barcelona','Tirana','Zürich en Basel','Porto','Hamburg','iets anders']]
 ];
 const evGet=()=>LS.get('eval')||{};
 function evSet(k,v){const e=evGet();e[k]=v;LS.set('eval',e);}
-function evCard(){if(now()<EVAL_OPEN)return '';const e=evGet();const done=EV.filter(x=>x[0]!=='h'&&e[x[1]]).length,N=EV.filter(x=>x[0]!=='h').length;
+function evCard(){if(now()<EVAL_OPEN)return `<div class="evcard" style="border-color:var(--line)"><div class="kicker">Zaterdag 3 oktober</div><div class="ti" style="margin-top:4px">Evaluatie van de reis</div><div class="ts">Bij het ontbijt vragen we je mening over de reis, in een paar minuten. Het formulier verschijnt hier zaterdagochtend.</div></div>`;const e=evGet();const done=EV.filter(x=>x[0]!=='h'&&e[x[1]]).length,N=EV.filter(x=>x[0]!=='h').length;
   return `<button class="evcard" data-v="eval"><div class="kicker">Zaterdag</div><div class="ti" style="margin-top:4px">Evaluatie van de reis</div><div class="ts">${done?done+' van '+N+' ingevuld':'Vijf minuten. Je antwoorden gaan per mail naar het bureau.'}</div></button>`;}
 function renderEval(){
   let h='<div class="ph1"><div class="kicker">KRAS Tours 26</div><h1>Evaluatie</h1></div>';
@@ -2030,20 +2037,33 @@ function evMail(){const e=evGet();const L=['Evaluatie KRAS Tours 26 — Amsterda
   return 'mailto:info@krasarchitecten.be?subject='+encodeURIComponent('Evaluatie KRAS Tours 26'+(e.naam?' — '+e.naam:''))+'&body='+encodeURIComponent(L.join('\n'));}
 /* ---------- kusama ---------- */
 let kusBusy=false;
-function kusama(){
-  if(kusBusy)return;kusBusy=true;const box=$('#kus'),c=$('#kusc'),dpr=Math.min(2,devicePixelRatio||1);
-  const W=innerWidth,H=innerHeight;c.width=W*dpr;c.height=H*dpr;const x=c.getContext('2d');x.scale(dpr,dpr);
-  const red='#E2231A',dots=[];const N=Math.round(W*H/2600);
-  for(let i=0;i<N;i++){const r=Math.random();dots.push({x:Math.random()*W,y:Math.random()*H,r:r<.08?18+Math.random()*26:r<.35?7+Math.random()*9:2.5+Math.random()*4,t:Math.random()});}
+function kusama(o){
+  o=o||{};if(kusBusy)return;kusBusy=true;const box=$('#kus'),c=$('#kusc'),dpr=Math.min(2,devicePixelRatio||1);
+  box.querySelector('b').textContent=o.cap||'Yayoi Kusama · 1929–2026';
+  const W=innerWidth,H=innerHeight;c.width=W*dpr;c.height=H*dpr;const x=c.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);
+  const pk=o.mode==='pumpkin',dot=pk?'#141414':'#E2231A',dots=[];const N=Math.round(W*H/(pk?1800:2600));
+  for(let i=0;i<N;i++){const r=Math.random();dots.push({x:Math.random()*W,y:Math.random()*H,r:pk?(r<.2?10+Math.random()*12:3+Math.random()*6):(r<.08?18+Math.random()*26:r<.35?7+Math.random()*9:2.5+Math.random()*4),t:Math.random()});}
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;const T=reduce?1:1600,t0=performance.now();
-  box.classList.add('on');
-  function frame(ts){const k=Math.min(1,(ts-t0)/T);x.clearRect(0,0,W,H);x.fillStyle=red;
-    for(const d of dots){if(d.t<=k){const g=Math.min(1,(k-d.t)*6+ (reduce?1:0));x.beginPath();x.arc(d.x,d.y,d.r*g,0,Math.PI*2);x.fill();}}
-    if(k<1)requestAnimationFrame(frame);else setTimeout(()=>{box.classList.remove('on');setTimeout(()=>{x.clearRect(0,0,W,H);kusBusy=false;},700);},2600);}
+  const hold=o.slow?4200:2600,fade=o.slow?1600:600;box.style.transition='opacity '+fade+'ms';box.classList.add('on');
+  function frame(ts){const k=Math.min(1,(ts-t0)/T);x.clearRect(0,0,W,H);
+    if(pk){x.globalAlpha=Math.min(1,k*2);x.fillStyle='#F4C400';x.fillRect(0,0,W,H);x.globalAlpha=1;}
+    x.fillStyle=dot;for(const d of dots){if(d.t<=k){const g=reduce?1:Math.min(1,(k-d.t)*6);x.beginPath();x.arc(d.x,d.y,d.r*g,0,Math.PI*2);x.fill();}}
+    if(k<1)requestAnimationFrame(frame);else setTimeout(()=>{box.classList.remove('on');setTimeout(()=>{x.clearRect(0,0,W,H);kusBusy=false;},fade+100);},hold);}
   requestAnimationFrame(frame);
 }
-let kTaps=[];
-document.addEventListener('click',e=>{if(!e.target.closest('.brand'))return;const t=Date.now();kTaps=kTaps.filter(v=>t-v<1500);kTaps.push(t);if(kTaps.length>=3){kTaps=[];kusama();}});
+document.addEventListener('click',e=>{if(e.target.closest('#kdot'))kusama();});
+function milestone(){
+  const has=k=>LS.get('kus:'+k),set=k=>LS.set('kus:'+k,1);const n=seen().filter(id=>P[id]).length,t=now(),d=todayIso();
+  const M=[
+   ['home',()=>isStandalone(),{cap:'Welkom aan boord'}],
+   ['all',()=>n>=PROJECTEN.length,{cap:'Alles gezien',mode:'pumpkin'}],
+   ['kusama',()=>state.view==='p'&&state.proj==='kusama',{}],
+   ['stedelijk',()=>d==='2026-10-01'&&t>=new Date('2026-10-01T16:30:00+02:00'),{cap:'Welkom in het Stedelijk'}],
+   ['klaar',()=>d==='2026-10-02'&&t>=new Date('2026-10-02T18:15:00+02:00'),{cap:'61 km. Klaar.'}],
+   ['vijf',()=>n>=5,{cap:'Leesuitdaging gehaald'}],
+   ['eerste',()=>n>=1,{cap:'Eerste fiche gelezen'}]];
+  for(const [k,cond,o] of M){if(!has(k)&&cond()){set(k);if(k==='all'){set('vijf');set('eerste');}else if(k==='vijf')set('eerste');setTimeout(()=>kusama(o),600);return;}}
+}
 let PM=null;
 async function initPmap(){const el=$('#pmap');if(!el)return;try{await leaflet();}catch(e){el.textContent='Kaart kon niet laden.';return;}
   if(!$('#pmap'))return;const p=P[state.proj];PM=L.map('pmap',{zoomControl:false,scrollWheelZoom:false}).setView(p.pos,16);PM.attributionControl.setPrefix(false);
@@ -2051,7 +2071,8 @@ async function initPmap(){const el=$('#pmap');if(!el)return;try{await leaflet();
 function afterRender(){
   if(state.view==='p'&&seg==='k')initPmap();
   if(state.view==='p'&&state.proj)markSeen(state.proj);
-  if(todayIso()==='2026-10-01'&&now()>=new Date('2026-10-01T18:00:00+02:00')&&!LS.get('kus:auto')){LS.set('kus:auto',1);setTimeout(kusama,700);}
+  milestone();
+  if(!LS.get('kdot:seen')){LS.set('kdot:seen',1);const k=$('#kdot');if(k){k.classList.add('pulse');}}
 }
 
 /* ---------- renderers ---------- */
@@ -2135,7 +2156,7 @@ let seg='f';
 function renderProject(){
   const p=P[state.proj];const ph=photos(p);const hero=ph[0];
   let h=`<div class="hero">${hero?imgTag(hero,'','',1200).replace('onerror="__imgerr(this)"','onerror="if(this.src!==this.dataset.o){this.src=this.dataset.o}else{this.remove()}"'):''}<button class="back" id="back">← Terug</button>${ph.length?`<span class="n">${ph.length} foto's · ${(p.plans||[]).length} plannen</span>`:''}</div>`;
-  h+=`<div class="pj"><div class="kicker">${esc(p.kicker)}</div><div class="h2row"><h2>${esc(p.titel)}</h2>${navBtn(p.pos.join(','),p.modus)}</div><div class="arch">${esc(p.arch)}</div><div class="ptags">${p.themas.map(t=>`<span class="tag${t==='Referentie'?' warn':''}">${esc(t)}</span>`).join('')}</div>
+  h+=`<div class="pj"><div class="kicker">${esc(p.kicker)}</div><div class="h2row"><h2>${esc(p.titel)}</h2>${navBtn(p.pos.join(','),p.modus)}</div><div class="arch">${esc(p.arch)}</div>${p.id==='kusama'?'<div class="khint"><i></i>Tik op de rode stip bovenaan</div>':''}<div class="ptags">${p.themas.map(t=>`<span class="tag${t==='Referentie'?' warn':''}">${esc(t)}</span>`).join('')}</div>
    <div class="seg"><button data-s="f" class="${seg==='f'?'on':''}">Foto's</button><button data-s="p" class="${seg==='p'?'on':''}" ${(p.plans||[]).length?'':'disabled'}>Plannen</button><button data-s="k" class="${seg==='k'?'on':''}">Kaart</button></div></div>`;
   if(seg==='f')h+=`<div class="strip">${ph.map((u,i)=>`<button data-img data-lb="f" data-i="${i}">${imgTag(u,'','',520)}</button>`).join('')}</div>`;
   if(seg==='p')h+=`<div class="strip plans">${(p.plans||[]).map((x,i)=>`<button data-img data-lb="p" data-i="${i}">${imgTag(x[0],'',x[1],520)}</button>`).join('')}</div>`;
@@ -2317,7 +2338,7 @@ window.addEventListener('popstate',()=>{closeLb();fromHash();render();});
 window.addEventListener('resize',placeMap);
 document.addEventListener('input',e=>{const t=e.target;if(t.dataset.evt)evSet(t.dataset.evt,t.value);});
 document.addEventListener('change',e=>{const t=e.target;if(t.dataset.evs)evSet(t.dataset.evs,t.value);});
-document.addEventListener('click',e=>{const a=e.target.closest('#evsend');if(!a)return;a.href=evMail();},true);
+document.addEventListener('click',e=>{const a=e.target.closest('#evsend');if(!a)return;a.href=evMail();if(!LS.get('kus:eval')){LS.set('kus:eval',1);setTimeout(()=>kusama({cap:'Dank je. Tot de volgende reis.',slow:true}),900);}},true);
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb();});
 fromHash();render();
 })();
