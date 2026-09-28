@@ -164,8 +164,9 @@ nav button.on{color:var(--ink)}nav button.on:before{background:var(--ink)}
 .wmap .leaflet-control-attribution{background:var(--bg);color:var(--ink3);font-size:9px}
 .walk ol{list-style:none;margin:10px 0 0;padding:0;counter-reset:w}
 .walk li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;align-items:start;padding:7px 0;border-top:1px solid var(--line);font-size:13.5px;line-height:1.35}
-.walk li .n{width:20px;height:20px;border:1.5px solid var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;font:500 10.5px var(--mono);margin-top:1px}
+.walk li .n{width:20px;height:20px;border:1.5px solid var(--ink);background:var(--ink);color:var(--bg);display:flex;align-items:center;justify-content:center;font:500 10.5px var(--mono);margin-top:1px}
 .walk li.hl .n{background:var(--accent);border-color:var(--accent);color:#fff}
+.walk li:first-child .n{background:var(--bg);color:var(--ink)}
 .walk li b{font-weight:600;display:block;color:var(--ink)}
 .leaflet-control-attribution a{color:var(--ink2)!important}.walk li span{color:var(--ink2);font-size:12.5px}
 .walk li button{font-size:12px;font-weight:600;border-bottom:1px solid var(--ink);padding:0 0 1px;margin-top:2px}
@@ -366,7 +367,7 @@ const PROGRAMMA = [
     { tijd:"15:00–16:00", titel:"Vogelobservatorium Tij", sub:"RAU + RO&AD Architecten · parking Deltahaven 61, Stellendam, dan te voet · toegang gratis · daarna vieruurtje", project:"tij", tags:["Bezoek"], adres:"Deltahaven 61, 3251 LC Stellendam" },
     { tijd:"16:00–17:30", titel:"Rijden", sub:"ca. 1u30 naar Amsterdam-Noord", type:"reis" },
     { tijd:"17:30", titel:"Inchecken — DoubleTree NDSM Wharf", sub:"NDSM-plein 28 · parkeren bij het hotel", ref:"hotel" },
-    { tijd:"18:30", titel:"Wandeling NDSM-werf, aperitief", sub:"Lus van 1,7 km langs zeven stops, eindigt bij IJver", project:["ndsm","werfstraat"], tags:["Te voet"], wandeling:true, geenNav:true, modus:"walking" },
+    { tijd:"18:30", titel:"Wandeling NDSM-werf, aperitief", sub:"Lus van 1,7 km langs zes stops, eindigt bij IJver", project:["ndsm","werfstraat"], tags:["Te voet"], wandeling:true, geenNav:true, modus:"walking" },
     { tijd:"19:00", titel:"Diner — IJver", sub:"Scheepsbouwkade 72", tags:["Gereserveerd"], web:"https://ijveramsterdam.nl/", adres:"Scheepsbouwkade 72, Amsterdam", modus:"walking" }
    ]},
  { id:"do", kort:"DO 01", label:"Oost, West", datum:"2026-10-01", kicker:"Dag 2 — donderdag 1 oktober",
@@ -2210,15 +2211,20 @@ async function slotSave(){
 
 
 /* ---------- wandeling NDSM ---------- */
+function walkLayer(map,hl,popups){const W=WANDELING;
+  L.polyline(W.route,{color:cssv('--bg'),weight:7,opacity:.9,interactive:false}).addTo(map);
+  L.polyline(W.route,{color:cssv('--accent'),weight:3.5,interactive:false}).addTo(map);
+  W.stops.forEach(s=>{const h=hl&&s.fiche===hl;const cls=s.n===1?'h':(h?'nx':'');const m=L.marker(s.pos,{icon:mkIcon(cls,s.n===1?'H':s.n-1),zIndexOffset:h?1000:100}).addTo(map);
+    if(popups)m.bindPopup(`<div class="pp-i"><span class="t">Wandeling · stop ${s.n===1?'H':s.n-1}</span><b>${esc(s.naam)}</b><div class="pp-s">${esc(s.sub)}</div></div>${s.fiche?`<div class="pp-a"><button data-p="${s.fiche}">Fiche</button></div>`:''}`);});
+  return W.route;}
 function walkHtml(hl){const W=WANDELING;
-  return `<div class="walk"><div id="wmap" class="wmap" data-hl="${hl||''}"></div><ol>${W.stops.map(s=>`<li class="${hl&&s.fiche===hl?'hl':''}"><div class="n">${s.n}</div><div><b>${esc(s.naam)}</b><span>${esc(s.sub)}</span></div>${s.fiche&&s.fiche!==hl?`<button data-p="${s.fiche}">Fiche</button>`:'<i></i>'}</li>`).join('')}</ol><div class="ws">${W.km} · ${W.min}</div></div>`;}
+  return `<div class="walk"><div id="wmap" class="wmap" data-hl="${hl||''}"></div><ol>${W.stops.map(s=>`<li class="${hl&&s.fiche===hl?'hl':''}"><div class="n">${s.n===1?'H':s.n-1}</div><div><b>${esc(s.naam)}</b><span>${esc(s.sub)}</span></div>${s.fiche&&s.fiche!==hl?`<button data-p="${s.fiche}">Fiche</button>`:'<i></i>'}</li>`).join('')}</ol><div class="ws">${W.km} · ${W.min}</div></div>`;}
 let WM=null;
 async function initWmap(){const el=$('#wmap');if(!el)return;try{await leaflet();}catch(e){el.textContent='Kaart kon niet laden.';return;}
   if(!$('#wmap')||WM)return;const hl=el.dataset.hl;
   WM=L.map('wmap',{zoomControl:false,scrollWheelZoom:false,attributionControl:true});WM.attributionControl.setPrefix(false);
   L.tileLayer(TILE_URL,TILE_OPT).addTo(WM);
-  L.polyline(WANDELING.route,{color:cssv('--ink'),weight:3,dashArray:'1 7',lineCap:'round',interactive:false}).addTo(WM);
-  WANDELING.stops.forEach(s=>{const h=hl&&s.fiche===hl;L.marker(s.pos,{icon:L.divIcon({className:'',html:`<div class="wk${h?' hl':''}">${s.n}</div>`,iconSize:[20,20],iconAnchor:[10,10]}),zIndexOffset:h?500:0}).addTo(WM);});
+  walkLayer(WM,hl);
   WM.fitBounds(WANDELING.route,{padding:[22,22]});}
 
 /* ---------- renderers ---------- */
@@ -2309,7 +2315,7 @@ function renderProject(){
   if(seg==='p')h+=`<div class="strip plans">${(p.plans||[]).map((x,i)=>`<button data-img data-lb="p" data-i="${i}">${imgTag(x[0],'',x[1],520)}</button>`).join('')}</div>`;
   if(seg==='k')h+=`<div class="mapbox"><div id="pmap"></div></div><div class="act" style="padding:10px 20px 0"><a href="https://www.google.com/maps/search/?api=1&query=${p.pos[0]},${p.pos[1]}" target="_blank" rel="noopener">Openen in Google Maps</a></div>`;
   if(seg!=='k')h+=`<div class="credit">Beeld: ${esc(p.credit)}</div>`;
-  if(p.id==='ndsm'||p.id==='werfstraat')h+=`<div class="walkp"><div class="k">Wandelroute · woensdag 18:30${p.id==='werfstraat'?' · stop 5':''}</div>${walkHtml(p.id)}</div>`;
+  if(p.id==='ndsm'||p.id==='werfstraat')h+=`<div class="walkp"><div class="k">Wandelroute · woensdag 18:30${p.id==='werfstraat'?' · stop 4':''}</div>${walkHtml(p.id)}</div>`;
   if(p.kras)h+=`<div class="kras"><div class="kicker">Voor KRAS</div><p>${esc(p.kras)}</p></div>`;
   if(p.data&&p.data.length)h+=`<dl class="data">${p.data.map(r=>`<div><dt>${esc(r[0])}</dt><dd>${r[1]}</dd></div>`).join('')}</dl>`;
   h+=`<article class="body">${p.html}</article>`;
@@ -2332,7 +2338,7 @@ let LM=null,LLD=null,mLay=null,geoW=null,meM=null,meC=null,meLast=null,mDraw=0;
 const TILE_URL='https://service.pdok.nl/brt/achtergrondkaart/wmts/v2_0/grijs/EPSG:3857/{z}/{x}/{y}.png',TILE_OPT={maxZoom:19,attribution:'Kaart © <a href="https://www.pdok.nl" target="_blank" rel="noopener">Kadaster / PDOK</a>'};
 const HOTEL=[52.40061,4.89402],REFPOS={hotel:HOTEL,fietsen:HOTEL};
 const LOCSVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>';
-const MODES=[['wo','WO 30'],['do','DO 01'],['vr','VR 02'],['alle','Alle'],['mymaps','My Maps']];
+const MODES=[['wo','WO 30'],['ndsm','NDSM'],['do','DO 01'],['vr','VR 02'],['alle','Alle'],['mymaps','My Maps']];
 function leaflet(){if(window.L)return Promise.resolve();if(LLD)return LLD;
   LLD=new Promise((res,rej)=>{const c=document.createElement('link');c.rel='stylesheet';c.href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';document.head.appendChild(c);
     const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';s.onload=res;s.onerror=()=>{LLD=null;rej();};document.head.appendChild(s);});return LLD;}
@@ -2379,6 +2385,7 @@ async function drawMode(fit){
     L.marker(HOTEL,{icon:mkIcon('h','H'),zIndexOffset:500}).bindPopup(`<div class="pp-i"><span class="t">Hotel</span><b>${esc(CONFIG.hotel.naam)}</b><div class="pp-s">${esc(CONFIG.hotel.adres)}</div></div>`).addTo(mLay);
     msum(`${PROJECTEN.length} projecten · Vogelobservatorium Tij ligt buiten beeld`);
     if(fit!==false)LM.fitBounds(B,{paddingTopLeft:[36,80],paddingBottomRight:[36,90]});return;}
+  if(md==='ndsm'){const r=walkLayer(mLay,null,true);msum(`Wandeling NDSM · ${WANDELING.km} · 6 stops`);if(fit!==false)LM.fitBounds(r,{paddingTopLeft:[36,80],paddingBottomRight:[36,90]});return;}
   const day=PROGRAMMA.find(d=>d.id===md);const ns=null;
   // stops groeperen per locatie
   const G=[];day.items.forEach((it,i)=>{const pos=posOf(it);if(!pos)return;let g=G.find(x=>near(x.pos,pos,40));if(!g){g={pos,items:[]};G.push(g);}g.items.push([it,i]);});
@@ -2394,7 +2401,6 @@ async function drawMode(fit){
   // projecten van de dag die niet op een stop liggen
   const ids=[];day.items.forEach(i=>i.project&&[].concat(i.project).forEach(x=>ids.includes(x)||ids.push(x)));
   ids.forEach(id=>{const p=P[id];if(!p||G.some(g=>near(g.pos,p.pos,60)))return;L.marker(p.pos,{icon:mkIcon('p')}).bindPopup(projPopup(p)).addTo(mLay);B.push(p.pos);});
-  if(md==='wo'){L.polyline(WANDELING.route,{color:ink,weight:2.5,dashArray:'1 6',lineCap:'round',interactive:false}).addTo(mLay);WANDELING.stops.slice(1,6).forEach(s=>L.marker(s.pos,{icon:L.divIcon({className:'',html:`<div class="wk">${s.n}</div>`,iconSize:[20,20],iconAnchor:[10,10]}),zIndexOffset:50}).bindPopup(`<div class="pp-i"><span class="t">Wandeling · stop ${s.n}</span><b>${esc(s.naam)}</b><div class="pp-s">${esc(s.sub)}</div></div>${s.fiche?`<div class="pp-a"><button data-p="${s.fiche}">Fiche</button></div>`:''}`).addTo(mLay));}
   // wandeltour
   day.items.forEach(it=>{if(it.posEind)L.polyline([it.pos,it.posEind],{color:ink,weight:2,dashArray:'2 6',interactive:false}).addTo(mLay);});
   let sumTxt=`${esc(day.kort)} · ${G.length} stops`;
