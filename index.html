@@ -65,6 +65,13 @@ h1{font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1.08;margin-
 .tl{padding:6px 20px 30px}
 .it{display:grid;grid-template-columns:62px minmax(0,1fr);gap:12px;padding:15px 0;border-bottom:1px solid var(--line)}
 .it.reis .ti{font-weight:500;color:var(--ink2);font-size:14px}
+.xtra{margin-top:10px;padding:9px 11px;border:1px dashed var(--line)}
+.xtra .k,.avond .k{font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3)}
+.xi{margin-top:7px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:start}
+.xi b{font-size:13.5px;font-weight:600}.xi .om{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-left:6px;font-weight:500}
+.xi span{grid-column:1;display:block;font-size:12.5px;line-height:1.4;color:var(--ink2)}
+.xi a{grid-row:1/3;grid-column:2;font-size:12px;color:var(--ink2);text-decoration:underline;text-underline-offset:2px}
+.avond{margin:6px 0 0;padding:14px 0 4px;border-top:1px solid var(--ink)}
 .it.klein{padding:10px 0}.it.klein .ti{font-size:13px;font-weight:500;color:var(--ink2)}
 .t{font-family:var(--mono);font-size:11.5px;color:var(--ink2);padding-top:3px;line-height:1.35}
 .ti{font-size:16px;font-weight:600;line-height:1.3}
@@ -245,6 +252,7 @@ nav button.on{color:var(--ink)}nav button.on:before{background:var(--ink)}
 .mk.nx{background:var(--accent);color:#fff}
 .mk.h{background:var(--bg);color:var(--ink);border:2px solid var(--ink)}
 .mk.p{width:12px;height:12px;background:var(--bg);border:2px solid var(--ink);box-shadow:none}
+.mk.x{width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--ink3);box-shadow:none}
 #lmap .leaflet-popup-content-wrapper{border-radius:0;background:var(--bg);color:var(--ink);box-shadow:0 2px 10px rgba(0,0,0,.25)}
 #lmap .leaflet-popup-tip{background:var(--bg)}
 #lmap .leaflet-popup-content{margin:12px 14px;font-family:var(--sans);font-size:13px;line-height:1.4;min-width:190px}
@@ -328,19 +336,16 @@ const CONFIG = {
   /* ---- DE OPEN VELDEN ------------------------------------------------ */
   open: {
     lunchDonderdag:  { naam: "Bar Botanique", adres: "Eerste van Swindenstraat 581, Amsterdam", status: "Nog te reserveren", web: "https://www.barbotanique.nl/en/" },
-    dinerDonderdag:  { naam: "", adres: "", status: "", web: "", opmerking: "Centrum" },
-    lunchVrijdag:    { naam: "", adres: "", status: "", web: "", opmerking: "omgeving Sluishuis / IJburg" },
-    dinerVrijdag:    { naam: "", adres: "", status: "", web: "" },
-    contactWestbeat: { persoon: "", telefoon: "", type: "" },
-    contactCornelis: { persoon: "", telefoon: "", type: "" },
-    contactXplore:   { persoon: "Freek (Xplore)", telefoon: "", type: "" }
+    dinerDonderdag:  { naam: "Nomi Leidseplein", adres: "Kleine-Gartmanplantsoen 17, Amsterdam", status: "Gereserveerd", web: "", opmerking: "Koreaanse barbecue" },
+    lunchVrijdag:    { naam: "NAP Amsterdam", adres: "Krijn Taconiskade 124, Amsterdam", status: "Niet gereserveerd, op goed geluk", web: "http://www.napamsterdam.nl/", opmerking: "" },
+    dinerVrijdag:    { naam: "Van de Werf", adres: "NDSM-Kade 2, Amsterdam", status: "Nog te reserveren", web: "https://vandewerf.amsterdam/" },
+    contactWestbeat: { persoon: "Jeffrey Smits (CFO Gerimedica)", telefoon: "+31 6 52 89 65 88", email: "j.smits@gerimedica.nl", type: "" },
+    contactCornelis: { persoon: "Michael van Bergen (architect)", telefoon: "+31 6 58 96 88 96", email: "michael@vanbergenarchitectura.nl", type: "" },
+    contactXplore:   { persoon: "Freek (rondleiding), Michelle Dijst (onthaal)", telefoon: "+31 20 811 00 13", email: "welkom@xplore.nl", type: "" }
   },
 
   /* ---- DEELNEMERS EN VERVOER ------------------------------------------ */
-  wagens: [
-    { naam: "Wagen Tine", inzittenden: "Tine, Bert, Robin, Femke, Simon" },
-    { naam: "Busje",      inzittenden: "Bart, Mahsa, Eva, Dieter, Amadé, Bas" }
-  ],
+  wagens: [],   /* wagenverdeling volgt later */
 
   /* ---- PRAKTISCH -------------------------------------------------------- */
   hotel: { naam: "DoubleTree by Hilton Amsterdam – NDSM Wharf", adres: "NDSM-plein 28, Amsterdam", web: "https://doubletree-hilton-amsterdam.bookstaygo.com/nl" },
@@ -358,7 +363,7 @@ const PROGRAMMA = [
  { id:"wo", kort:"WO 30", label:"Delta", datum:"2026-09-30", kicker:"Dag 1 — woensdag 30 september",
    titel:"Vertrek, delta, NDSM", fiets:false, modus:"driving", weer:[51.8186,4.0561],
    items:[
-    { tijd:"08:30–09:00", titel:"Verzamelen — Arsenaal, Gent", sub:"Vertrek met de wagens", wagens:true, adres:"Arsenaal, Gent" },
+    { tijd:"08:30–09:00", titel:"Verzamelen — Arsenaal, Gent", sub:"Vertrek met de wagens", adres:"Arsenaal, Gent" },
     { tijd:"09:00", titel:"Rijden", sub:"ca. 45 min", type:"reis" },
     { tijd:"10:00–12:00", verrassing:true },
     { tijd:"12:00–13:00", titel:"Rijden", sub:"naar Oostkapelle", type:"reis" },
@@ -377,13 +382,16 @@ const PROGRAMMA = [
     { tijd:"09:00", titel:"Fietsen ophalen — NDSM Bikes", sub:"NDSM-plein 8", ref:"fietsen", stop:"hotel", pos:[52.40061,4.89402] },
     { tijd:"±09:30", titel:"KNSM-eiland", sub:"Piraeus, Langhaus & Hofhaus, Emerald Empire", project:"knsm", tags:["Doorrit"], stop:"knsm", pos:[52.37686,4.94027] },
     { tijd:"10:00–13:00", titel:"Funenpark & Oostenburg", sub:"Geleide wandeltour Architour — gids Paul Vlok. Start: ingang Funenpark. Koffiepauze inbegrepen.", project:["funen","oostenburg"], tags:["Geleid","Te voet","Gereserveerd"], stop:"architour", pos:[52.36756,4.93160], posEind:[52.37139,4.92610] },
-    { tijd:"13:00–14:00", titel:"Lunch", open:"lunchDonderdag", stop:"lunchdo", pos:[52.36342,4.93029] },
+    { tijd:"13:00–14:00", titel:"Lunch", open:"lunchDonderdag", stop:"lunchdo", pos:[52.36342,4.93029],
+      extra:[{naam:"OBA Oosterdok, dakterras", tekst:"Openbare bibliotheek met gratis dakterras en zicht over de stad. Open tot 22:00.", pos:[52.37585,4.90839], omhoog:true}] },
     { tijd:"14:30", titel:"Westbeat", sub:"Studioninedots · Delflandlaan", project:"westbeat", contact:"contactWestbeat", stop:"westbeat", pos:[52.35769,4.84037] },
     { tijd:"15:00–16:00", titel:"Cornelis", sub:"FARO + Van Bergen Architectura · Rijnlandlaan 201", project:"cornelis", contact:"contactCornelis", stop:"cornelis", pos:[52.35766,4.83902], modus:"walking" },
-    { tijd:"16:30–18:00", titel:"Stedelijk Museum — Yayoi Kusama", sub:"Museumplein 10 · tickets met tijdslot", project:["stedelijk","kusama"], tags:["Tickets geboekt"], stop:"stedelijk", pos:[52.35801,4.87976] },
-    { tijd:"19:30", titel:"Diner", open:"dinerDonderdag", stop:"dinerdo" },
+    { tijd:"16:30–18:00", titel:"Stedelijk Museum — Yayoi Kusama", sub:"Museumplein 10 · tickets met tijdslot", project:["stedelijk","kusama"], tags:["Tickets geboekt"], stop:"stedelijk", pos:[52.35801,4.87976],
+      extra:[{naam:"Rijksmuseum-passage", tekst:"Op weg naar het diner: fiets door de passage onder het museum.", pos:[52.36000,4.88522]}] },
+    { tijd:"19:30", titel:"Diner", open:"dinerDonderdag", stop:"dinerdo", pos:[52.36351,4.88377] },
     { tijd:"", titel:"Terug naar het hotel", stop:"hotel2", pos:[52.40061,4.89402], klein:true }
-   ]},
+   ],
+   avond:[{naam:"Avondpont over het IJ", tekst:"Op de terugweg van het diner neem je toch de pont Centraal – NDSM. Ga vooraan staan: de verlichte stad en het IJ bij donker. Gratis."}]},
  { id:"vr", kort:"VR 02", label:"Noord, IJburg", datum:"2026-10-02", kicker:"Dag 3 — vrijdag 2 oktober",
    titel:"Noord, IJburg, Bajes, Houthavens", fiets:true, modus:"bicycling", weer:[52.37,4.90],
    items:[
@@ -395,15 +403,19 @@ const PROGRAMMA = [
     { tijd:"±11:15", titel:"Cityplot Buiksloterham", sub:"Studioninedots + DELVA · Distelweg", project:"cityplot", tags:["Doorrit"], stop:"cityplot", pos:[52.39316,4.90424] },
     { tijd:"±11:40", titel:"Tolhuiskade", sub:"Civic Architects · Tolhuiskanaal, naast Deck", project:"tolhuiskade", tags:["Doorrit"], stop:"tolhuiskade", pos:[52.39170,4.90194] },
     { tijd:"±12:00", titel:"IKC Overhoeks", sub:"RU+PA · Grasweg 3", project:"ikc", tags:["Doorrit"], stop:"ikc", pos:[52.38840,4.90413] },
-    { tijd:"13:00–14:00", titel:"Lunch", open:"lunchVrijdag", stop:"lunchvr" },
-    { tijd:"±14:00", titel:"Sluishuis", sub:"BIG + Barcode · Steigereiland, IJburg", project:"sluishuis", tags:["Doorrit"], stop:"sluishuis", pos:[52.36447,4.98137] },
-    { tijd:"±14:45", titel:"Jonas", sub:"Orange Architects · Krijn Taconiskade", project:"jonas", tags:["Doorrit"], stop:"jonas", pos:[52.35366,5.00387] },
+    { tijd:"±12:45", titel:"Sluishuis", sub:"BIG + Barcode · Steigereiland, IJburg", project:"sluishuis", tags:["Doorrit"], stop:"sluishuis", pos:[52.36447,4.98137],
+      extra:[{naam:"Sluishuis, dakwandeling", tekst:"Openbare trappen langs de schuine gevels naar het dak. Volgens bezoekers open vanaf 12:00.", pos:[52.36420,4.98080], omhoog:true}] },
+    { tijd:"13:15–14:15", titel:"Lunch", open:"lunchVrijdag", stop:"lunchvr", pos:[52.35289,5.00327] },
+    { tijd:"±14:20", titel:"Jonas", sub:"Orange Architects · Krijn Taconiskade", project:"jonas", tags:["Doorrit"], stop:"jonas", pos:[52.35366,5.00387] },
     { tijd:"±15:30", titel:"De Nieuwe Meent", sub:"Time to Access + Office Raumplan · Archimedesplantsoen 110", project:"meent", tags:["Doorrit"], stop:"meent", pos:[52.35266,4.94720] },
     { tijd:"±16:15", titel:"Bajeskwartier", sub:"The Martin (OMA) · De Vrijheid (Kempe Thill)", project:"bajes", tags:["Doorrit"], stop:"bajes", pos:[52.33871,4.92415] },
-    { tijd:"±17:30", titel:"Houthavens", sub:"Pontsteiger, Parkblok, Superlofts · omweg langs Het Schip", project:"houthavens", tags:["Doorrit"], stop:"houthavens", pos:[52.39375,4.87981] },
+    { tijd:"±17:30", titel:"Houthavens", sub:"Pontsteiger, Parkblok, Superlofts · omweg langs Het Schip", project:"houthavens", tags:["Doorrit"], stop:"houthavens", pos:[52.39375,4.87981],
+      extra:[{naam:"Pontsteiger, plein onder de brug", tekst:"Openbare ruimte onder de overkraging, vlak bij de pont naar NDSM.", pos:[52.39181,4.88548], omhoog:true}] },
     { tijd:"±18:15", titel:"Terug naar het hotel", sub:"pont Houthavens – NDSM", stop:"hotel2", pos:[52.40061,4.89402], klein:true },
     { tijd:"19:30", titel:"Diner", open:"dinerVrijdag" }
-   ]},
+   ],
+   avond:[{naam:"Kunststad NDSM", tekst:"De scheepsbouwloods naast het hotel: ateliers als houten dozen in het stalen casco. Binnenkijken zolang de loods open is.", pos:[52.40110,4.89667]},
+          {naam:"Avondpont heen en terug", tekst:"NDSM – Centraal en terug, ca. 15 minuten per richting. Gratis.", pos:[52.40130,4.89140]}]},
  { id:"za", kort:"ZA 03", label:"Terug", datum:"2026-10-03", kicker:"Dag 4 — zaterdag 3 oktober",
    titel:"Terug naar Gent", fiets:false, modus:"driving", weer:[52.37,4.90],
    items:[
@@ -415,15 +427,21 @@ const PROGRAMMA = [
    ]}
 ];
 
+/* Vrij te kiezen, zonder vast moment (betalend). Uren gecontroleerd 28/9/2026; STRAAT by Night vr 2/10 17–21u, € 15. */
+const VRIJ = [
+  {naam:"A'DAM Lookout", tekst:"Uitkijkplatform en schommel boven het IJ, naast Eye en de pont Buiksloterweg. Dagelijks 10:00–22:00, laatste toegang 21:00. € 16,50 online, € 18,50 aan de kassa; schommel € 7,50 extra.", adres:"IJpromenade 4, Amsterdam", web:"https://www.adamlookout.com/", pos:[52.38396,4.90211]},
+  {naam:"STRAAT", tekst:"Museum voor street art in een scheepsbouwloods op NDSM, 3 minuten van het hotel. Wo–do 10:00–17:00, vrijdag 2 oktober tot 21:00 (STRAAT by Night). € 21,50 overdag, € 15 met het avondticket (vr 17:00–21:00).", adres:"NDSM-Plein 1, Amsterdam", web:"https://www.straatmuseum.com/", pos:[52.40214,4.89426]}
+];
+
 /* Vooraf berekende fietsritten (OpenStreetMap-fietsrouteplanner), afstand m / tijd s.
    Ontbrekende ritten (bv. naar een restaurant) berekent de app zelf zodra er een adres is. */
 const RITTEN = {
   "hotel>knsm":[4616,1474,"pont over het IJ"], "knsm>architour":[1876,535],
   "architour>lunchdo":[1222,391], "lunchdo>westbeat":[7195,2101], "westbeat>cornelis":[66,39],
-  "cornelis>stedelijk":[3299,983], "stedelijk>hotel2":[5885,1761,"pont Houthavens – NDSM"],
+  "cornelis>stedelijk":[3299,983], "stedelijk>dinerdo":[890,293], "dinerdo>hotel2":[5282,1599],
   "hotel>republica":[1207,378], "republica>xplore":[1822,580], "xplore>ceuvel":[1773,518],
   "ceuvel>cityplot":[1094,286], "cityplot>tolhuiskade":[363,168], "tolhuiskade>ikc":[604,258],
-  "ikc>sluishuis":[8656,2403,"pont over het IJ"], "sluishuis>jonas":[2284,628], "jonas>meent":[5337,1468],
+  "ikc>sluishuis":[8656,2403,"pont over het IJ"], "sluishuis>lunchvr":[2193,603], "lunchvr>jonas":[92,25], "jonas>meent":[5337,1468],
   "meent>bajes":[2771,854], "bajes>houthavens":[9153,2709], "houthavens>hotel2":[2082,731,"pont Houthavens – NDSM"]
 };
 
@@ -2236,6 +2254,8 @@ const MODELBL={driving:'met de auto',bicycling:'met de fiets',walking:'te voet'}
 function navBtn(dest,mode){if(!dest)return '';return `<a class="nav-go" href="${navUrl(dest,mode)}" target="_blank" rel="noopener" aria-label="Navigeer ${MODELBL[mode]||''}" title="Navigeer ${MODELBL[mode]||''}">${NAVSVG}</a>`;}
 function itemDest(it){if(it.pos)return it.pos.join(',');if(it.open){const o=openVal(it.open);return o.adres?(o.naam?o.naam+', ':'')+o.adres:'';}if(it.ref&&CONFIG[it.ref])return CONFIG[it.ref].naam+', '+CONFIG[it.ref].adres;return it.adres||'';}
 function mapsLink(q){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q)}
+function xiHtml(x,mode){return `<div class="xi"><b>${esc(x.naam)}${x.omhoog?'<span class="om">Omhoog</span>':''}</b>${x.pos?`<a href="${navUrl(x.pos.join(','),mode||'bicycling')}" target="_blank" rel="noopener">Route</a>`:''}<span>${esc(x.tekst)}</span></div>`;}
+function xtraHtml(list,mode){if(!list||!list.length)return '';return `<div class="xtra"><div class="k">Onderweg, als er tijd is</div>${list.map(x=>xiHtml(x,mode)).join('')}</div>`;}
 function itemHtml(it,day){
   if(it.verrassing)return surpriseHtml(it);
   const ids=it.project?[].concat(it.project):[];
@@ -2247,7 +2267,7 @@ function itemHtml(it,day){
     if(o.web)act.push(`<a href="${esc(o.web)}" target="_blank" rel="noopener">Website</a>`);
   }
   if(it.contact){const c=openVal(it.contact);
-    sub+=(sub?'<br>':'')+'Contact: '+(c.persoon?esc(c.persoon)+(c.telefoon?' · <a href="tel:'+esc(c.telefoon.replace(/\s/g,''))+'">'+esc(c.telefoon)+'</a>':''):'<span class="open">nog in te vullen</span>');
+    sub+=(sub?'<br>':'')+'Contact: '+(c.persoon?esc(c.persoon)+(c.telefoon?' · <a href="tel:'+esc(c.telefoon.replace(/\s/g,''))+'">'+esc(c.telefoon)+'</a>':'')+(c.email?' · <a href="mailto:'+esc(c.email)+'">'+esc(c.email)+'</a>':''):'<span class="open">nog in te vullen</span>');
     if(c.type)tags.push(c.type);}
   if(it.ref){const r=CONFIG[it.ref];if(r){if(r.telefoon)act.push(`<a href="tel:${esc(r.telefoon.replace(/\s/g,''))}">Bellen</a>`);if(r.web)act.push(`<a href="${esc(r.web)}" target="_blank" rel="noopener">Website</a>`);if(r.status)tags.push(r.status);}}
   if(it.web)act.push(`<a href="${esc(it.web)}" target="_blank" rel="noopener">Website</a>`);
@@ -2256,7 +2276,7 @@ function itemHtml(it,day){
   let more='';if(ids.length)more=ids.map(id=>P[id]?`<button class="more" data-p="${id}">Fiche ${esc(P[id].short||P[id].titel)}</button>`:'').join(' &nbsp; ');
   const cls='it'+(it.type==='reis'?' reis':'')+(it.klein?' klein':'');
   const nb=(it.type==='reis'||it.geenNav)?'':navBtn(itemDest(it),it.modus||day.modus);
-  return `<div class="${cls}"><div class="t">${esc(it.tijd||'')}</div><div><div class="ti">${titel}</div>${sub?`<div class="ts">${sub}</div>`:''}${tagHtml(tags)}${projThumbs(ids)}${more?'<div>'+more+'</div>':''}${act.length?`<div class="act">${act.join('')}</div>`:''}</div><div>${nb}</div></div>`;
+  return `<div class="${cls}"><div class="t">${esc(it.tijd||'')}</div><div><div class="ti">${titel}</div>${sub?`<div class="ts">${sub}</div>`:''}${tagHtml(tags)}${projThumbs(ids)}${more?'<div>'+more+'</div>':''}${act.length?`<div class="act">${act.join('')}</div>`:''}${xtraHtml(it.extra,day.modus)}</div><div>${nb}</div></div>`;
 }
 const PAK='<div class="pak"><div class="k">Meebrengen</div><ul><li>Waterdichte schoenen of zelfs rubberlaarzen. Hou er rekening mee dat je schoenen volledig nat kunnen worden en vlak na de activiteit waarschijnlijk niet meer bruikbaar zijn.</li><li>Afhankelijk van het weer: warme kledij, een regenjas, eventueel een paraplu.</li></ul></div>';
 function surpriseHtml(it){
@@ -2295,6 +2315,7 @@ function renderDay(){
   else h+=`<div class="dsum"><div>Vervoer<strong>${day.id==='wo'?'Wagens':'Wagens'}</strong></div><div>Hotel<strong>NDSM</strong></div><div>Projecten<strong>${np}</strong></div></div>`;
   h+=wxHtml(day)+(day.id==='za'?evCard():'')+'</section><section class="tl">';
   day.items.forEach(it=>{if(it.stop&&L[it.stop])h+=bikeHtml(L[it.stop]);h+=itemHtml(it,day);});
+  if(day.avond&&day.avond.length)h+=`<div class="avond"><div class="k">'s Avonds, vrij en gratis</div>${day.avond.map(x=>xiHtml(x,'walking')).join('')}</div>`;
   h+='</section>';return h;
 }
 function renderProjects(){
@@ -2359,7 +2380,7 @@ async function initMap(){
   if(meLast)drawMe(false);
   drawMode(true);
 }
-function mkIcon(cls,txt){const p=cls==='p';return L.divIcon({className:'',html:`<div class="mk ${cls}">${txt||''}</div>`,iconSize:p?[12,12]:[24,24],iconAnchor:p?[6,6]:[12,12],popupAnchor:[0,p?-6:-12]});}
+function mkIcon(cls,txt){const p=cls==='p'||cls==='x';return L.divIcon({className:'',html:`<div class="mk ${cls}">${txt||''}</div>`,iconSize:p?[12,12]:[24,24],iconAnchor:p?[6,6]:[12,12],popupAnchor:[0,p?-6:-12]});}
 function projPopup(p){return `<div class="pp-i"><span class="t">${esc(p.kicker)}</span><b>${esc(p.titel)}</b><div class="pp-s">${esc(p.arch)}</div></div><div class="pp-a"><button data-p="${p.id}">Fiche</button><a href="${navUrl(p.pos.join(','),p.modus)}" target="_blank" rel="noopener">Navigeer</a></div>`;}
 function posOf(it){
   if(it.verrassing||it.type==='reis')return null;
@@ -2382,6 +2403,7 @@ async function drawMode(fit){
   const B=[];
   if(md==='alle'){
     PROJECTEN.forEach(p=>{L.marker(p.pos,{icon:mkIcon('p')}).bindPopup(projPopup(p)).addTo(mLay);if(p.id!=='tij')B.push(p.pos);});
+    VRIJ.forEach(x=>L.marker(x.pos,{icon:mkIcon('x'),zIndexOffset:50}).bindPopup(`<div class="pp-i"><span class="t">Vrij te kiezen</span><b>${esc(x.naam)}</b><div class="pp-s">${esc(x.tekst)}</div></div>`).addTo(mLay));
     L.marker(HOTEL,{icon:mkIcon('h','H'),zIndexOffset:500}).bindPopup(`<div class="pp-i"><span class="t">Hotel</span><b>${esc(CONFIG.hotel.naam)}</b><div class="pp-s">${esc(CONFIG.hotel.adres)}</div></div>`).addTo(mLay);
     msum(`${PROJECTEN.length} projecten · Vogelobservatorium Tij ligt buiten beeld`);
     if(fit!==false)LM.fitBounds(B,{paddingTopLeft:[36,80],paddingBottomRight:[36,90]});return;}
@@ -2401,6 +2423,9 @@ async function drawMode(fit){
   // projecten van de dag die niet op een stop liggen
   const ids=[];day.items.forEach(i=>i.project&&[].concat(i.project).forEach(x=>ids.includes(x)||ids.push(x)));
   ids.forEach(id=>{const p=P[id];if(!p||G.some(g=>near(g.pos,p.pos,60)))return;L.marker(p.pos,{icon:mkIcon('p')}).bindPopup(projPopup(p)).addTo(mLay);B.push(p.pos);});
+  // extra's onderweg en 's avonds
+  const xs=[];day.items.forEach(it=>(it.extra||[]).forEach(x=>xs.push([x,'Onderweg'])));(day.avond||[]).forEach(x=>x.pos&&xs.push([x,"'s Avonds"]));
+  xs.forEach(([x,t])=>L.marker(x.pos,{icon:mkIcon('x'),zIndexOffset:50}).bindPopup(`<div class="pp-i"><span class="t">${t}, optioneel</span><b>${esc(x.naam)}</b><div class="pp-s">${esc(x.tekst)}</div></div><div class="pp-a"><a href="${navUrl(x.pos.join(','),t==='Onderweg'?day.modus:'walking')}" target="_blank" rel="noopener">Navigeer</a></div>`).addTo(mLay));
   // wandeltour
   day.items.forEach(it=>{if(it.posEind)L.polyline([it.pos,it.posEind],{color:ink,weight:2,dashArray:'2 6',interactive:false}).addTo(mLay);});
   let sumTxt=`${esc(day.kort)} · ${G.length} stops`;
@@ -2430,11 +2455,11 @@ function toggleLoc(){
 function renderInfo(){
   const c=CONFIG;let h='<div class="ph1"><div class="kicker">Info</div><h1>Praktisch</h1></div>';
   h+='<div class="sec"><h3>Op je beginscherm</h3>'+instHtml(true)+'</div>';
-  h+='<div class="sec"><h3>Deelnemers en wagens</h3>'+c.wagens.map(w=>`<div class="row"><div class="ti">${esc(w.naam)}</div><div class="ts">${esc(w.inzittenden)}</div></div>`).join('')+'</div>';
   const blk=(t,r)=>`<div class="row"><div class="ti">${esc(r.naam)}</div><div class="ts">${esc(r.adres||'')}${r.telefoon?'<br><a href="tel:'+esc(r.telefoon.replace(/\s/g,''))+'">'+esc(r.telefoon)+'</a>':''}${r.status?' · '+esc(r.status):''}</div><div class="act">${r.web?`<a href="${esc(r.web)}" target="_blank" rel="noopener">Website</a>`:''}${r.adres?`<a href="${mapsLink(r.naam+', '+r.adres)}" target="_blank" rel="noopener">Route</a>`:''}</div></div>`;
   h+='<div class="sec"><h3>Verblijf en vervoer</h3>'+blk('Hotel',c.hotel)+blk('Fietsen',c.fietsen)+blk('Gids',c.gids)+'</div>';
   const o=c.open,lab={lunchDonderdag:'Lunch donderdag',dinerDonderdag:'Diner donderdag',lunchVrijdag:'Lunch vrijdag',dinerVrijdag:'Diner vrijdag',contactWestbeat:'Contact Westbeat',contactCornelis:'Contact Cornelis',contactXplore:'Contact Xplore'};
   h+='<div class="sec"><h3>Nog open</h3>'+Object.keys(o).map(k=>{const v=o[k];const val=v.naam||v.persoon;return `<div class="row"><div class="ts" style="font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase">${esc(lab[k]||k)}</div><div class="ti" style="margin-top:3px">${val?esc(val):'<span class="open" style="font-weight:400">Nog in te vullen</span>'}</div>${v.status||v.type?`<div class="ts">${esc(v.status||v.type)}</div>`:''}</div>`}).join('')+'</div>';
+  h+='<div class="sec"><h3>Vrij te kiezen</h3><div class="row"><div class="ts">Geen vast moment, betalend. Voor wie op een vrij uur nog iets wil doen.</div></div>'+VRIJ.map(x=>`<div class="row"><div class="ti">${esc(x.naam)}</div><div class="ts">${esc(x.tekst)}<br>${esc(x.adres)}</div><div class="act"><a href="${esc(x.web)}" target="_blank" rel="noopener">Website</a><a href="${mapsLink(x.naam+', '+x.adres)}" target="_blank" rel="noopener">Route</a></div></div>`).join('')+'</div>';
   h+='<div class="sec"><h3>Nuttig</h3><div class="row"><div class="ti">Noodnummer</div><div class="ts"><a href="tel:112">112</a> — politie, brandweer, ambulance</div></div><div class="row"><div class="ti">Pont over het IJ</div><div class="ts">Gratis voor fietsers. NDSM – Centraal, Houthavens – NDSM en Buiksloterweg – Centraal varen frequent; reken op enkele minuten wachttijd.</div><div class="act"><a href="https://www.gvb.nl/reizen/veren" target="_blank" rel="noopener">Vaartijden GVB</a></div></div><div class="row"><div class="ti">Fietstijden</div><div class="ts">Berekend met de OpenStreetMap-fietsrouteplanner. De groepstijd rekent 20% extra, afgerond op 5 minuten.</div></div></div>';
   h+='<div class="sec"><h3>Over deze app</h3><div class="row"><div class="ts">Teksten: samenvatting van vakbronnen (Arcam, Archined, ArchDaily, Dezeen, Designboom, Architectenweb, De Architect en de websites van de bureaus), telkens vermeld per fiche. Beelden worden rechtstreeks van de bron geladen; alle rechten bij de vermelde fotografen en bureaus. Enkel voor intern gebruik tijdens de studiereis.</div></div></div>';
   return h;
